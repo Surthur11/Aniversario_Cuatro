@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para El Amor De Mi Vida 💖</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #E6E6FA;
+            overflow-x: hidden;
+        }
+
+        .font-romantic {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .bg-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .heart-bg {
+            position: absolute;
+            bottom: -50px;
+            animation: floatUp 12s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.25;
+            }
+            85% {
+                opacity: 0.25;
+            }
+            100% {
+                transform: translateY(-110vh) rotate(360deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        .gift-container {
+            cursor: pointer;
+            perspective: 1000px;
+            transition: transform 0.3s ease;
+        }
+
+        .gift-container:hover {
+            transform: scale(1.05);
+        }
+
+        .gift-lid {
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.5s ease;
+            transform-origin: bottom;
+        }
+
+        .gift-box-open .gift-lid {
+            transform: translateY(-120px) rotate(-15deg) scale(0.9);
+            opacity: 0;
+        }
+
+        .gift-box-open .gift-body {
+            animation: giftUnwrap 0.8s forwards ease-in-out;
+        }
+
+        @keyframes giftUnwrap {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        .flowers-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            display: none;
+        }
+
+        .flower {
+            position: absolute;
+            top: -60px;
+            animation: fallDown 8s linear infinite;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+
+        @keyframes fallDown {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.9;
+            }
+            90% {
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(105vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 20px 40px rgba(106, 90, 205, 0.15);
+        }
+
+        .glow-effect {
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
+        }
+
+        .fade-in {
+            animation: fadeIn 1.2s forwards ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pulse-gentle {
+            animation: pulseGentle 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseGentle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center relative select-none">
+
+    <div class="bg-hearts" id="bgHeartsContainer"></div>
+
+    <div id="giftScreen" class="z-10 flex flex-col items-center justify-center p-4 text-center">
+        <div class="mb-6">
+            <span class="inline-block bg-white/70 backdrop-blur-md px-6 py-2 rounded-full text-purple-900 font-medium text-sm md:text-base shadow-sm border border-purple-200 animate-bounce">
+                ✨ Tienes un regalo especial esperándote ✨
+            </span>
+        </div>
+
+        <div id="giftContainer" class="gift-container relative w-64 h-64 md:w-72 md:h-72 flex flex-col items-center justify-end">
+            <div id="giftLid" class="gift-lid absolute top-4 z-20 w-72 h-16 bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 rounded-lg shadow-xl flex items-center justify-center border-b-4 border-rose-700">
+                <div class="absolute -top-10 w-20 h-12 flex justify-center items-center">
+                    <div class="w-10 h-10 bg-yellow-400 rounded-full border-2 border-yellow-500 shadow-md transform -rotate-45 -mr-2"></div>
+                    <div class="w-10 h-10 bg-yellow-400 rounded-full border-2 border-yellow-500 shadow-md transform rotate-45 -ml-2"></div>
+                    <div class="absolute w-6 h-6 bg-yellow-500 rounded-full border border-yellow-600 z-10 shadow-sm"></div>
+                </div>
+                <div class="w-10 h-full bg-yellow-400 border-x border-yellow-500/50"></div>
+            </div>
+
+            <div id="giftBody" class="gift-body relative w-64 h-48 bg-gradient-to-br from-pink-400 via-rose-400 to-pink-500 rounded-b-xl shadow-2xl overflow-hidden flex justify-center border-t-2 border-pink-300">
+                <div class="w-10 h-full bg-yellow-400 border-x border-yellow-500/50"></div>
+                <div class="absolute top-1/2 -translate-y-1/2 w-full h-10 bg-yellow-400 border-y border-yellow-500/50"></div>
+                <div class="absolute inset-0 bg-white/10 opacity-30 pointer-events-none"></div>
+            </div>
+        </div>
+
+        <p class="mt-8 text-purple-900 font-romantic text-2xl md:text-3xl font-bold tracking-wide">
+            ¡Haz clic en el regalo para abrirlo!
+        </p>
+    </div>
+
+    <div id="mainScreen" class="hidden z-10 w-full max-w-4xl px-4 py-8 flex-col items-center justify-center min-h-screen">
+        <div class="glass-card rounded-3xl p-6 md:p-10 w-full text-center relative overflow-hidden glow-effect fade-in my-auto">
+            <div class="absolute top-3 left-3 text-yellow-500 text-2xl md:text-3xl opacity-80">🌻</div>
+            <div class="absolute top-3 right-3 text-yellow-500 text-2xl md:text-3xl opacity-80">🌼</div>
+            <div class="absolute bottom-3 left-3 text-yellow-500 text-2xl md:text-3xl opacity-80">🌼</div>
+            <div class="absolute bottom-3 right-3 text-yellow-500 text-2xl md:text-3xl opacity-80">🌻</div>
+
+            <header class="mb-6">
+                <div class="inline-flex items-center gap-2 bg-yellow-100 text-yellow-800 px-4 py-1.5 rounded-full text-xs md:text-sm font-semibold mb-3 border border-yellow-300">
+                    <i class="fa-solid font-heart text-rose-500 animate-pulse"></i> Desde el 21 de Septiembre de 2022
+                </div>
+                <h1 class="font-romantic text-4xl md:text-6xl text-purple-950 font-bold leading-tight">
+                    Tiempo en que mi corazón te pertenece, te amo
+                </h1>
+            </header>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 my-8">
+                <div class="bg-white/80 rounded-2xl p-3 md:p-4 border border-purple-100 shadow-sm flex flex-col items-center pulse-gentle">
+                    <span id="years" class="text-3xl md:text-5xl font-extrabold text-purple-900">00</span>
+                    <span class="text-xs md:text-sm font-medium text-purple-600 uppercase tracking-wider mt-1">Años</span>
+                </div>
+
+                <div class="bg-white/80 rounded-2xl p-3 md:p-4 border border-purple-100 shadow-sm flex flex-col items-center pulse-gentle" style="animation-delay: 0.2s;">
+                    <span id="months" class="text-3xl md:text-5xl font-extrabold text-purple-900">00</span>
+                    <span class="text-xs md:text-sm font-medium text-purple-600 uppercase tracking-wider mt-1">Meses</span>
+                </div>
+
+                <div class="bg-white/80 rounded-2xl p-3 md:p-4 border border-purple-100 shadow-sm flex flex-col items-center pulse-gentle" style="animation-delay: 0.4s;">
+                    <span id="days" class="text-3xl md:text-5xl font-extrabold text-purple-900">00</span>
+                    <span class="text-xs md:text-sm font-medium text-purple-600 uppercase tracking-wider mt-1">Días</span>
+                </div>
+
+                <div class="bg-white/80 rounded-2xl p-3 md:p-4 border border-purple-100 shadow-sm flex flex-col items-center pulse-gentle" style="animation-delay: 0.6s;">
+                    <span id="hours" class="text-3xl md:text-5xl font-extrabold text-purple-900">00</span>
+                    <span class="text-xs md:text-sm font-medium text-purple-600 uppercase tracking-wider mt-1">Horas</span>
+                </div>
+
+                <div class="bg-white/80 rounded-2xl p-3 md:p-4 border border-purple-100 shadow-sm flex flex-col items-center pulse-gentle" style="animation-delay: 0.8s;">
+                    <span id="minutes" class="text-3xl md:text-5xl font-extrabold text-purple-900">00</span>
+                    <span class="text-xs md:text-sm font-medium text-purple-600 uppercase tracking-wider mt-1">Minutos</span>
+                </div>
+
+                <div class="bg-white/80 rounded-2xl p-3 md:p-4 border border-purple-100 shadow-sm flex flex-col items-center pulse-gentle" style="animation-delay: 1s;">
+                    <span id="seconds" class="text-3xl md:text-5xl font-extrabold text-rose-600">00</span>
+                    <span class="text-xs md:text-sm font-medium text-rose-500 uppercase tracking-wider mt-1">Segundos</span>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-6 border-t border-purple-100/60 flex flex-col items-center gap-4">
+                <p class="text-gray-700 text-base md:text-lg italic">
+                    "Cada segundo a tu lado es una flor más en nuestro jardín infinito." 🌻✨
+                </p>
+
+                <button id="downloadPdfBtn" class="mt-2 bg-gradient-to-r from-purple-600 via-pink-500 to-rose-500 hover:from-purple-700 hover:to-rose-600 text-white font-semibold py-3 px-6 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 flex items-center gap-3 border border-white/40 group">
+                    <i class="fa-solid fa-file-pdf text-xl text-yellow-300 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-sm md:text-base tracking-wide">Descargar Carta Especial (PDF) 💌</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="flowersContainer" class="flowers-container"></div>
+
+    <div class="fixed bottom-5 right-5 z-30">
+        <button id="loveQuoteBtn" class="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-semibold py-3 px-5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center gap-2 border-2 border-white/50">
+            <span class="text-xl">💌</span>
+            <span class="text-sm md:text-base">Un mensaje para ti</span>
+        </button>
+    </div>
+
+    <div id="quoteModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 hidden flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="glass-card rounded-3xl max-w-md w-full p-6 md:p-8 text-center relative transform scale-95 transition-transform duration-300" id="quoteModalCard">
+            <button id="closeModalBtn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+
+            <div class="w-16 h-16 bg-pink-100 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
+                💖
+            </div>
+
+            <h3 class="font-romantic text-2xl text-purple-950 font-bold mb-2">Para ti, mi amor</h3>
+            
+            <p id="quoteText" class="text-gray-700 text-lg md:text-xl font-medium my-6 italic leading-relaxed min-h-[80px] flex items-center justify-center">
+            </p>
+
+            <button id="nextQuoteBtn" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2.5 px-4 rounded-xl transition-colors duration-200 flex items-center justify-center gap-2 shadow-md">
+                <span>Ver otra frase</span>
+                <i class="fa-solid fa-sparkles text-yellow-300"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function createBackgroundHearts() {
+            const container = document.getElementById('bgHeartsContainer');
+            const heartIcons = ['fa-heart', 'fa-heart-pulse'];
+            const colors = [
+                'text-pink-400/30', 
+                'text-rose-400/25', 
+                'text-black/15', 
+                'text-purple-900/10', 
+                'text-pink-600/20'
+            ];
+
+            for (let i = 0; i < 35; i++) {
+                const heart = document.createElement('i');
+                const randomIcon = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                heart.className = `fa-solid ${randomIcon} heart-bg ${randomColor}`;
+                heart.style.left = `${Math.random() * 100}%`;
+                heart.style.animationDuration = `${8 + Math.random() * 10}s`;
+                heart.style.animationDelay = `${Math.random() * 8}s`;
+                heart.style.fontSize = `${16 + Math.random() * 28}px`;
+
+                container.appendChild(heart);
+            }
+        }
+
+        function createYellowFlowers() {
+            const container = document.getElementById('flowersContainer');
+            container.style.display = 'block';
+            const flowerEmojis = ['🌻', '🌼', '💛', '🌸', '🌻', '🌼'];
+
+            for (let i = 0; i < 40; i++) {
+                const flower = document.createElement('div');
+                flower.className = 'flower';
+                flower.innerText = flowerEmojis[Math.floor(Math.random() * flowerEmojis.length)];
+                flower.style.left = `${Math.random() * 100}%`;
+                flower.style.animationDuration = `${5 + Math.random() * 7}s`;
+                flower.style.animationDelay = `${Math.random() * 5}s`;
+                flower.style.fontSize = `${20 + Math.random() * 24}px`;
+
+                container.appendChild(flower);
+            }
+        }
+
+        const startDate = new Date('2022-09-21T00:00:00');
+
+        function updateCounter() {
+            const now = new Date();
+
+            let years = now.getFullYear() - startDate.getFullYear();
+            let months = now.getMonth() - startDate.getMonth();
+            let days = now.getDate() - startDate.getDate();
+            let hours = now.getHours() - startDate.getHours();
+            let minutes = now.getMinutes() - startDate.getMinutes();
+            let seconds = now.getSeconds() - startDate.getSeconds();
+
+            if (seconds < 0) {
+                seconds += 60;
+                minutes--;
+            }
+            if (minutes < 0) {
+                minutes += 60;
+                hours--;
+            }
+            if (hours < 0) {
+                hours += 24;
+                days--;
+            }
+            if (days < 0) {
+                const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+                days += prevMonth.getDate();
+                months--;
+            }
+            if (months < 0) {
+                months += 12;
+                years--;
+            }
+
+            document.getElementById('years').innerText = String(years).padStart(2, '0');
+            document.getElementById('months').innerText = String(months).padStart(2, '0');
+            document.getElementById('days').innerText = String(days).padStart(2, '0');
+            document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+            document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
+        }
+
+        const giftContainer = document.getElementById('giftContainer');
+        const giftScreen = document.getElementById('giftScreen');
+        const mainScreen = document.getElementById('mainScreen');
+
+        giftContainer.addEventListener('click', () => {
+            giftContainer.classList.add('gift-box-open');
+
+            setTimeout(() => {
+                giftScreen.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                giftScreen.style.opacity = '0';
+                giftScreen.style.transform = 'scale(0.9)';
+
+                setTimeout(() => {
+                    giftScreen.style.display = 'none';
+                    mainScreen.classList.remove('hidden');
+                    mainScreen.classList.add('flex');
+                    
+                    createYellowFlowers();
+                    updateCounter();
+                    setInterval(updateCounter, 1000);
+                }, 600);
+            }, 700);
+        });
+
+        const loveQuotes = [
+            "Desde el 21 de septiembre de 2022, mi lugar favorito en el mundo es a tu lado. 💕",
+            "Si sé lo que es el amor, es gracias a ti. ❤️",
+            "Eres la coincidencia más bonita que llegó a mi vida. ✨",
+            "Mi corazón te eligió a ti y te elegiría mil veces más. 🌻",
+            "Contigo el tiempo vuela, pero cada segundo queda grabado para siempre. ⏳💖",
+            "Amarte no es una opción, es la decisión más hermosa de todos mis días. 🌹",
+            "Eres el sol que le da color a mis días amarillos. 🌼💛",
+            "Gracias por hacer que mi mundo sea más dulce y lleno de luz. 🍦✨",
+            "Te amo hoy, mañana y por el resto de mi vida. 💍",
+            "Juntos es mi lugar favorito en todo el universo. 🌌💗"
+        ];
+
+        const quoteModal = document.getElementById('quoteModal');
+        const quoteModalCard = document.getElementById('quoteModalCard');
+        const quoteText = document.getElementById('quoteText');
+        const loveQuoteBtn = document.getElementById('loveQuoteBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const nextQuoteBtn = document.getElementById('nextQuoteBtn');
+
+        let lastQuoteIndex = -1;
+
+        function getRandomQuote() {
+            let index;
+            do {
+                index = Math.floor(Math.random() * loveQuotes.length);
+            } while (index === lastQuoteIndex && loveQuotes.length > 1);
+            
+            lastQuoteIndex = index;
+            return loveQuotes[index];
+        }
+
+        function showQuote() {
+            quoteText.innerText = getRandomQuote();
+            quoteModal.classList.remove('hidden');
+            setTimeout(() => {
+                quoteModalCard.classList.remove('scale-95');
+                quoteModalCard.classList.add('scale-100');
+            }, 10);
+        }
+
+        function hideQuote() {
+            quoteModalCard.classList.remove('scale-100');
+            quoteModalCard.classList.add('scale-95');
+            setTimeout(() => {
+                quoteModal.classList.add('hidden');
+            }, 200);
+        }
+
+        loveQuoteBtn.addEventListener('click', showQuote);
+        closeModalBtn.addEventListener('click', hideQuote);
+        nextQuoteBtn.addEventListener('click', () => {
+            quoteText.style.opacity = '0';
+            setTimeout(() => {
+                quoteText.innerText = getRandomQuote();
+                quoteText.style.opacity = '1';
+            }, 200);
+        });
+
+        quoteModal.addEventListener('click', (e) => {
+            if (e.target === quoteModal) hideQuote();
+        });
+
+        const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+
+        downloadPdfBtn.addEventListener('click', () => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a5'
+            });
+
+            doc.setFillColor(253, 242, 248);
+            doc.rect(0, 0, 148, 210, 'F');
+
+            doc.setDrawColor(236, 72, 153);
+            doc.setLineWidth(1.2);
+            doc.rect(8, 8, 132, 194);
+            doc.setLineWidth(0.4);
+            doc.rect(10, 10, 128, 190);
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(22);
+            doc.setTextColor(190, 24, 93);
+            doc.text("Carta Para Mi Val", 74, 28, { align: 'center' });
+
+            doc.setFontSize(14);
+            doc.setTextColor(225, 29, 72);
+            doc.text("💖 💖 💖", 74, 36, { align: 'center' });
+
+            doc.setFont('times', 'normal');
+            doc.setFontSize(11);
+            doc.setTextColor(51, 51, 51);
+
+            const letterText = "Mi amor:\n\nHola mi Valecita, en estos cuatro años que llevamos juntos eh conocido mas de ti, mas de tu persona y la verdad me gusta mucho.\n\nSe que hemos tenido nuestra indiferencias y problemas pero tambien tenemos muchos recuerdos bien bonitos y la verdad cuando los recuerdo se me escapa una sonrisa.\n\nEl 21 de septiembre pero del 2022 te pedia que fueras mi novia y la verdad que estaba nervioso ese dia, y hasta esta fecha me has enamorado a tal grado que no me veo en un futuro que no sea contigo. Espero que este año sea otro de muchisisisisimos más.\n\nDe: tu celoso\nPara: mi enojona <3\n\nCon amor,\nte quiero.";
+
+            const splitText = doc.splitTextToSize(letterText, 110);
+            doc.text(splitText, 19, 50);
+            doc.setFontSize(12);
+            doc.text("💐 🌻 🌹 🌻 💐", 74, 185, { align: 'center' });
+            doc.save("Carta Para mi Val.pdf");
+        });
+
+        window.onload = () => {
+            createBackgroundHearts();
+        };
+    </script>
+</body>
+</html>
