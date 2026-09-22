@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <style>
         body {
@@ -237,10 +236,10 @@
                     "Cada segundo a tu lado es una flor más en nuestro jardín infinito." 🌻✨
                 </p>
 
-                <button id="downloadPdfBtn" class="mt-2 bg-gradient-to-r from-purple-600 via-pink-500 to-rose-500 hover:from-purple-700 hover:to-rose-600 text-white font-semibold py-3 px-6 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 flex items-center gap-3 border border-white/40 group">
+                <a href="Carta Para mi Val.pdf" download="Carta Para mi Val.pdf" class="mt-2 bg-gradient-to-r from-purple-600 via-pink-500 to-rose-500 hover:from-purple-700 hover:to-rose-600 text-white font-semibold py-3 px-6 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 flex items-center gap-3 border border-white/40 group">
                     <i class="fa-solid fa-file-pdf text-xl text-yellow-300 group-hover:scale-110 transition-transform"></i>
                     <span class="text-sm md:text-base tracking-wide">Descargar Carta Especial (PDF) 💌</span>
-                </button>
+                </a>
             </div>
         </div>
     </div>
@@ -448,47 +447,6 @@
 
         quoteModal.addEventListener('click', (e) => {
             if (e.target === quoteModal) hideQuote();
-        });
-
-        const downloadPdfBtn = document.getElementById('downloadPdfBtn');
-
-        downloadPdfBtn.addEventListener('click', () => {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a5'
-            });
-
-            doc.setFillColor(253, 242, 248);
-            doc.rect(0, 0, 148, 210, 'F');
-
-            doc.setDrawColor(236, 72, 153);
-            doc.setLineWidth(1.2);
-            doc.rect(8, 8, 132, 194);
-            doc.setLineWidth(0.4);
-            doc.rect(10, 10, 128, 190);
-
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(22);
-            doc.setTextColor(190, 24, 93);
-            doc.text("Carta Para Mi Val", 74, 28, { align: 'center' });
-
-            doc.setFontSize(14);
-            doc.setTextColor(225, 29, 72);
-            doc.text("💖 💖 💖", 74, 36, { align: 'center' });
-
-            doc.setFont('times', 'normal');
-            doc.setFontSize(11);
-            doc.setTextColor(51, 51, 51);
-
-            const letterText = "Mi amor:\n\nHola mi Valecita, en estos cuatro años que llevamos juntos eh conocido mas de ti, mas de tu persona y la verdad me gusta mucho.\n\nSe que hemos tenido nuestra indiferencias y problemas pero tambien tenemos muchos recuerdos bien bonitos y la verdad cuando los recuerdo se me escapa una sonrisa.\n\nEl 21 de septiembre pero del 2022 te pedia que fueras mi novia y la verdad que estaba nervioso ese dia, y hasta esta fecha me has enamorado a tal grado que no me veo en un futuro que no sea contigo. Espero que este año sea otro de muchisisisisimos más.\n\nDe: tu celoso\nPara: mi enojona <3\n\nCon amor,\nte quiero.";
-
-            const splitText = doc.splitTextToSize(letterText, 110);
-            doc.text(splitText, 19, 50);
-            doc.setFontSize(12);
-            doc.text("💐 🌻 🌹 🌻 💐", 74, 185, { align: 'center' });
-            doc.save("Carta Para mi Val.pdf");
         });
 
         window.onload = () => {
