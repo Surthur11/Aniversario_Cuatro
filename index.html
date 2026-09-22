@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para el amor de mi vida</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #e6e6fa;
+            color: #3b2460;
+            overflow-x: hidden;
+        }
+
+        .pantalla-regalo {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .aviso {
+            background: rgba(255,255,255,.8);
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin-bottom: 35px;
+        }
+
+        .regalo {
+            width: 260px;
+            height: 220px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .tapa {
+            position: absolute;
+            top: 0;
+            left: -10px;
+            width: 280px;
+            height: 65px;
+            background: #e83e68;
+            border-radius: 8px;
+            z-index: 2;
+            transition: .7s;
+        }
+
+        .tapa:after,
+        .caja:after {
+            content: "";
+            position: absolute;
+            background: #f4c542;
+        }
+
+        .tapa:after {
+            width: 35px;
+            height: 65px;
+            left: 122px;
+            top: 0;
+        }
+
+        .caja {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 260px;
+            height: 170px;
+            background: #f05a7d;
+            border-radius: 0 0 12px 12px;
+            transition: .7s;
+        }
+
+        .caja:after {
+            width: 260px;
+            height: 30px;
+            top: 70px;
+            left: 0;
+        }
+
+        .regalo.abierto .tapa {
+            transform: translateY(-120px) rotate(-10deg);
+            opacity: 0;
+        }
+
+        .regalo.abierto .caja {
+            transform: scale(.1);
+            opacity: 0;
+        }
+
+        .texto-regalo {
+            margin-top: 30px;
+            font-family: Georgia, serif;
+            font-size: 25px;
+        }
+
+        .principal {
+            display: none;
+            width: min(900px, 92%);
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+
+        .tarjeta {
+            background: rgba(255,255,255,.9);
+            border-radius: 22px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 12px 30px rgba(70,50,100,.15);
+        }
+
+        h1 {
+            font-family: Georgia, serif;
+            font-size: clamp(32px, 6vw, 55px);
+            margin: 15px 0 25px;
+        }
+
+        .fecha {
+            display: inline-block;
+            padding: 7px 14px;
+            background: #fff3bd;
+            border-radius: 18px;
+            color: #775800;
+        }
+
+        .contador {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 30px 0;
+        }
+
+        .tiempo {
+            background: white;
+            border-radius: 15px;
+            padding: 15px 5px;
+        }
+
+        .numero {
+            display: block;
+            font-size: 38px;
+            font-weight: bold;
+        }
+
+        .etiqueta {
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .frase {
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+            font-style: italic;
+        }
+
+        button {
+            border: 0;
+            border-radius: 20px;
+            padding: 12px 20px;
+            cursor: pointer;
+            color: white;
+            background: #a044c5;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #8733ab;
+        }
+
+        .boton-mensaje {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            background: #e83e68;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.45);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        .modal.mostrar {
+            display: flex;
+        }
+
+        .contenido-modal {
+            width: min(420px, 100%);
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .flores {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 5;
+        }
+
+        .flor {
+            position: absolute;
+            top: -50px;
+            animation: caer 7s linear forwards;
+        }
+
+        @keyframes caer {
+            from {
+                transform: translateY(0) rotate(0);
+                opacity: 0;
+            }
+            15% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .contador {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .tarjeta {
+                padding: 22px 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="pantalla-regalo" id="pantallaRegalo">
+        <div class="aviso">✨ Tienes un regalo especial esperándote ✨</div>
+
+        <div class="regalo" id="regalo">
+            <div class="tapa"></div>
+            <div class="caja"></div>
+        </div>
+
+        <div class="texto-regalo">¡Haz clic en el regalo para abrirlo!</div>
+    </section>
+
+    <main class="principal" id="principal">
+        <div class="tarjeta">
+            <div class="fecha">Desde el 21 de Septiembre de 2022</div>
+
+            <h1>Tiempo en que mi corazón te pertenece, te amo</h1>
+
+            <div class="contador">
+                <div class="tiempo">
+                    <span class="numero" id="years">00</span>
+                    <span class="etiqueta">Años</span>
+                </div>
+                <div class="tiempo">
+                    <span class="numero" id="months">00</span>
+                    <span class="etiqueta">Meses</span>
+                </div>
+                <div class="tiempo">
+                    <span class="numero" id="days">00</span>
+                    <span class="etiqueta">Días</span>
+                </div>
+                <div class="tiempo">
+                    <span class="numero" id="hours">00</span>
+                    <span class="etiqueta">Horas</span>
+                </div>
+                <div class="tiempo">
+                    <span class="numero" id="minutes">00</span>
+                    <span class="etiqueta">Minutos</span>
+                </div>
+                <div class="tiempo">
+                    <span class="numero" id="seconds">00</span>
+                    <span class="etiqueta">Segundos</span>
+                </div>
+            </div>
+
+            <p class="frase">
+                "Cada segundo a tu lado es una flor más en nuestro jardín infinito." 🌻✨
+            </p>
+
+            <button id="pdf">Descargar Carta Especial (PDF) 💌</button>
+        </div>
+    </main>
+
+    <button class="boton-mensaje" id="mensaje">💌 Un mensaje para ti</button>
+
+    <div class="modal" id="modal">
+        <div class="contenido-modal">
+            <h2>Para ti, mi amor</h2>
+            <p id="textoFrase"></p>
+            <button id="otraFrase">Ver otra frase</button>
+            <button id="cerrar">Cerrar</button>
+        </div>
+    </div>
+
+    <div class="flores" id="flores"></div>
+
+    <script>
+        const inicio = new Date("2022-09-21T00:00:00");
+
+        const regalo = document.getElementById("regalo");
+        const pantallaRegalo = document.getElementById("pantallaRegalo");
+        const principal = document.getElementById("principal");
+
+        regalo.addEventListener("click", function () {
+            regalo.classList.add("abierto");
+
+            setTimeout(function () {
+                pantallaRegalo.style.display = "none";
+                principal.style.display = "block";
+                ponerFlores();
+                actualizarTiempo();
+            }, 700);
+        });
+
+        function actualizarTiempo() {
+            const ahora = new Date();
+
+            let anios = ahora.getFullYear() - inicio.getFullYear();
+            let meses = ahora.getMonth() - inicio.getMonth();
+            let dias = ahora.getDate() - inicio.getDate();
+            let horas = ahora.getHours() - inicio.getHours();
+            let minutos = ahora.getMinutes() - inicio.getMinutes();
+            let segundos = ahora.getSeconds() - inicio.getSeconds();
+
+            if (segundos < 0) {
+                segundos += 60;
+                minutos--;
+            }
+
+            if (minutos < 0) {
+                minutos += 60;
+                horas--;
+            }
+
+            if (horas < 0) {
+                horas += 24;
+                dias--;
+            }
+
+            if (dias < 0) {
+                const ultimoMes = new Date(
+                    ahora.getFullYear(),
+                    ahora.getMonth(),
+                    0
+                );
+                dias += ultimoMes.getDate();
+                meses--;
+            }
+
+            if (meses < 0) {
+                meses += 12;
+                anios--;
+            }
+
+            document.getElementById("years").textContent = String(anios).padStart(2, "0");
+            document.getElementById("months").textContent = String(meses).padStart(2, "0");
+            document.getElementById("days").textContent = String(dias).padStart(2, "0");
+            document.getElementById("hours").textContent = String(horas).padStart(2, "0");
+            document.getElementById("minutes").textContent = String(minutos).padStart(2, "0");
+            document.getElementById("seconds").textContent = String(segundos).padStart(2, "0");
+        }
+
+        setInterval(actualizarTiempo, 1000);
+
+        function ponerFlores() {
+            const simbolos = ["🌻", "🌼", "💛", "🌸"];
+
+            for (let i = 0; i < 25; i++) {
+                const flor = document.createElement("div");
+                flor.className = "flor";
+                flor.textContent = simbolos[Math.floor(Math.random() * simbolos.length)];
+                flor.style.left = Math.random() * 100 + "%";
+                flor.style.animationDelay = Math.random() * 5 + "s";
+                flor.style.fontSize = 18 + Math.random() * 20 + "px";
+
+                document.getElementById("flores").appendChild(flor);
+            }
+        }
+
+        const frases = [
+            "Desde el 21 de septiembre de 2022, mi lugar favorito en el mundo es a tu lado. 💕",
+            "Si sé lo que es el amor, es gracias a ti. ❤️",
+            "Eres la coincidencia más bonita que llegó a mi vida. ✨",
+            "Mi corazón te eligió a ti y te elegiría mil veces más. 🌻",
+            "Contigo el tiempo vuela, pero cada segundo queda grabado para siempre. ⏳💖",
+            "Amarte no es una opción, es la decisión más hermosa de todos mis días. 🌹",
+            "Eres el sol que le da color a mis días amarillos. 🌼💛",
+            "Gracias por hacer que mi mundo sea más dulce y lleno de luz. 🍦✨",
+            "Te amo hoy, mañana y por el resto de mi vida. 💍",
+            "Juntos es mi lugar favorito en todo el universo. 🌌💗"
+        ];
+
+        let fraseAnterior = -1;
+
+        function mostrarFrase() {
+            let numero;
+
+            do {
+                numero = Math.floor(Math.random() * frases.length);
+            } while (numero === fraseAnterior);
+
+            fraseAnterior = numero;
+            document.getElementById("textoFrase").textContent = frases[numero];
+            document.getElementById("modal").classList.add("mostrar");
+        }
+
+        document.getElementById("mensaje").addEventListener("click", mostrarFrase);
+        document.getElementById("otraFrase").addEventListener("click", mostrarFrase);
+
+        document.getElementById("cerrar").addEventListener("click", function () {
+            document.getElementById("modal").classList.remove("mostrar");
+        });
+
+        document.getElementById("modal").addEventListener("click", function (evento) {
+            if (evento.target === this) {
+                this.classList.remove("mostrar");
+            }
+        });
+
+        document.getElementById("pdf").addEventListener("click", function () {
+            const carta =
+`Mi amor:
+
+Hola mi Valecita, en estos cuatro años que llevamos juntos eh conocido mas de ti, mas de tu persona y la verdad me gusta mucho.
+
+Se que hemos tenido nuestra indiferencias y problemas pero tambien tenemos muchos recuerdos bien bonitos y la verdad cuando los recuerdo se me escapa una sonrisa.
+
+El 21 de septiembre pero del 2022 te pedia que fueras mi novia y la verdad que estaba nervioso ese dia, y hasta esta fecha me has enamorado a tal grado que no me veo en un futuro que no sea contigo. Espero que este año sea otro de muchisisisisimos más.
+
+De: tu celoso
+Para: mi enojona <3
+
+Con amor,
+te quiero.`;
+
+            function escapar(texto) {
+                return texto
+                    .replace(/\\/g, "\\\\")
+                    .replace(/\(/g, "\\(")
+                    .replace(/\)/g, "\\)")
+                    .replace(/\r/g, "")
+                    .replace(/\n/g, " ");
+            }
+
+            const palabras = carta.split(/\s+/);
+            const lineas = [];
+            let linea = "";
+
+            palabras.forEach(function (palabra) {
+                const prueba = linea ? linea + " " + palabra : palabra;
+                if (prueba.length > 72) {
+                    lineas.push(linea);
+                    linea = palabra;
+                } else {
+                    linea = prueba;
+                }
+            });
+
+            if (linea) lineas.push(linea);
+
+            const contenido = [];
+            contenido.push("q");
+            contenido.push("BT");
+            contenido.push("/F1 20 Tf");
+            contenido.push("1 0 0 1 210 785 Tm");
+            contenido.push("(Carta Para Mi Val) Tj");
+            contenido.push("ET");
+
+            contenido.push("BT");
+            contenido.push("/F1 11 Tf");
+            contenido.push("1 0 0 1 55 735 Tm");
+
+            lineas.forEach(function (lineaTexto, i) {
+                if (i > 0) contenido.push("0 -18 Td");
+                contenido.push("(" + escapar(lineaTexto) + ") Tj");
+            });
+
+            contenido.push("ET");
+            contenido.push("Q");
+
+            const stream = contenido.join("\n");
+            const objetos = [
+                "<< /Type /Catalog /Pages 2 0 R >>",
+                "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+                "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 420 595] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>",
+                "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+                "<< /Length " + stream.length + " >>\nstream\n" + stream + "\nendstream"
+            ];
+
+            let pdf = "%PDF-1.4\n";
+            const offsets = [0];
+
+            objetos.forEach(function (objeto, indice) {
+                offsets[indice + 1] = pdf.length;
+                pdf += (indice + 1) + " 0 obj\n" + objeto + "\nendobj\n";
+            });
+
+            const xref = pdf.length;
+            pdf += "xref\n0 " + (objetos.length + 1) + "\n";
+            pdf += "0000000000 65535 f \n";
+
+            for (let i = 1; i <= objetos.length; i++) {
+                pdf += String(offsets[i]).padStart(10, "0") + " 00000 n \n";
+            }
+
+            pdf += "trailer\n";
+            pdf += "<< /Size " + (objetos.length + 1) + " /Root 1 0 R >>\n";
+            pdf += "startxref\n" + xref + "\n%%EOF";
+
+            const archivo = new Blob([pdf], { type: "application/pdf" });
+            const enlace = document.createElement("a");
+            enlace.href = URL.createObjectURL(archivo);
+            enlace.download = "Carta Para mi Val.pdf";
+            document.body.appendChild(enlace);
+            enlace.click();
+            enlace.remove();
+
+            setTimeout(function () {
+                URL.revokeObjectURL(enlace.href);
+            }, 1000);
+        });
+
+            doc.setFillColor(253, 242, 248);
+            doc.rect(0, 0, 148, 210, "F");
+
+            doc.setDrawColor(236, 72, 153);
+            doc.setLineWidth(1.2);
+            doc.rect(8, 8, 132, 194);
+
+            doc.setLineWidth(0.4);
+            doc.rect(10, 10, 128, 190);
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(22);
+            doc.setTextColor(190, 24, 93);
+            doc.text("Carta Para Mi Val", 74, 28, { align: "center" });
+
+            doc.setFont("times", "normal");
+            doc.setFontSize(11);
+            doc.setTextColor(51, 51, 51);
+
+            const carta =
+`Mi amor:
+
+Hola mi Valecita, en estos cuatro años que llevamos juntos eh conocido mas de ti, mas de tu persona y la verdad me gusta mucho.
+
+Se que hemos tenido nuestra indiferencias y problemas pero tambien tenemos muchos recuerdos bien bonitos y la verdad cuando los recuerdo se me escapa una sonrisa.
+
+El 21 de septiembre pero del 2022 te pedia que fueras mi novia y la verdad que estaba nervioso ese dia, y hasta esta fecha me has enamorado a tal grado que no me veo en un futuro que no sea contigo. Espero que este año sea otro de muchisisisisimos más.
+
+De: tu celoso
+Para: mi enojona <3
+
+Con amor,
+te quiero.`;
+
+            const lineas = doc.splitTextToSize(carta, 110);
+            doc.text(lineas, 19, 50);
+
+            doc.setFontSize(12);
+            doc.setTextColor(225, 29, 72);
+            doc.text("Flores para ti", 74, 190, { align: "center" });
+
+            doc.save("Carta Para mi Val.pdf");
+        ;
+    </script>
+
+</body>
+</html>s
